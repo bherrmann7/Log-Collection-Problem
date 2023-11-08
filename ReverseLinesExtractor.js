@@ -10,7 +10,7 @@
  *       return result [ "happy cow\n" ]
  */
 exports.ReverseLinesExtractor = class ReverseLinesExtractor {
-  constructor(filePath, options = {}) {
+  constructor() {
     // when line continues in next chunk, we save the end part in the remaining buffer
     this.remainingBuffer = null;
     // during first time we discard the possibly incomplete line at the end of the file
@@ -32,9 +32,7 @@ exports.ReverseLinesExtractor = class ReverseLinesExtractor {
       if (this.remainingBuffer === null) {
         return [];
       }
-      return [
-        this.remainingBuffer.toString(),
-      ];
+      return [this.remainingBuffer.toString()];
     }
 
     const lines = [];
