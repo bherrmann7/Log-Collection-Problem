@@ -1,6 +1,8 @@
 const { ReverseLinesExtractor } = require("../ReverseLinesExtractor");
 let reverseLinesExtractor;
 
+// used by the ReverseLinesExtractor
+
 // Ingests a string into the lines extractor
 exports.ingest = function (chunkAsString) {
   let chunk = Buffer.from(chunkAsString);

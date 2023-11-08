@@ -11,9 +11,11 @@
  */
 exports.ReverseLinesExtractor = class ReverseLinesExtractor {
   constructor(filePath, options = {}) {
-    // I'm presuming reusing this buffer is a useful performance optimization
+    // when line continues in next chunk, we save the end part in the remaining buffer
     this.remainingBuffer = null;
+    // during first time we discard the possibly incomplete line at the end of the file
     this.firstTime = true;
+    // indicates we are finished, and dont expect to be called again
     this.allDone = false;
   }
 
@@ -24,14 +26,14 @@ exports.ReverseLinesExtractor = class ReverseLinesExtractor {
       );
     }
 
-    // All done, send the remaining as a line.
+    // All done, send the remaining Buffer as a line (if needed)
     if (length === 0) {
       this.allDone = true;
       if (this.remainingBuffer === null) {
         return [];
       }
       return [
-        this.remainingBuffer.toString(), // Mild unease about byte->string
+        this.remainingBuffer.toString(),
       ];
     }
 

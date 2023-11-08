@@ -1,5 +1,4 @@
 const fs = require("fs");
-const fsPromises = fs.promises;
 const express = require("express");
 const app = express();
 const { ReverseFileReader } = require("./ReverseFileReader");

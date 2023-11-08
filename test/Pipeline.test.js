@@ -35,8 +35,7 @@ describe("pipeline", () => {
     const expectedContent = "line3\nline2\nline1\n";
 
     const reverseFileReader = new ReverseFileReader(
-      tmpPath,
-      { bufferSize: 3 } /*BOBH*/,
+      tmpPath
     );
     const writableCollector = new WritableCollector();
     // WHEN
@@ -45,16 +44,14 @@ describe("pipeline", () => {
 
     // THEN
     expect(writableCollector.collectedBuffer.toString()).toEqual(
-      expectedContent,
+      expectedContent
     );
   });
 
   test("closer to real world test", async () => {
     // GIVEN
-    const reversedSampleFile = fs.readFileSync("./test/sample.tac.log");
-    const reverseFileReader = new ReverseFileReader(
-      "./test/sample.log",
-      { bufferSize: 3 } /*BOBH*/,
+     const reverseFileReader = new ReverseFileReader(
+      "./test/sample.log"
     );
     const transform = new ReverseLinesTransform();
     const writableCollector = new WritableCollector();
@@ -62,15 +59,16 @@ describe("pipeline", () => {
     reverseFileReader.pipe(transform).pipe(writableCollector);
     await once(writableCollector, "finish");
     // THEN
-    expect(writableCollector.collectedBuffer.toString()).toEqual(
-      reversedSampleFile.toString(),
+    const reversedSampleFile = fs.readFileSync("./test/sample.tac.log");
+    expect(writableCollector.collectedBuffer).toEqual(
+      reversedSampleFile
     );
   });
 
   test("test larger generated ascii files", async () => {
     const startTime = Math.floor(Date.now() / 1000);
     const largeFilename = "/tmp/test-ascii-log-file.txt";
-    const targetSize = 1e2; // BOBH
+    const targetSize = 1e3; // using 1e9 is 1 gig, takes a few minutes
     let expectedSize = 0;
     {
       const readableStream = new Readable({
@@ -121,4 +119,6 @@ describe("pipeline", () => {
     console.log(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
     await exec(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
   });
+
+//test zero length file.
 });
