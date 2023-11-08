@@ -120,5 +120,32 @@ describe("pipeline", () => {
     await exec(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
   });
 
-//test zero length file.
+  test("zero length file.", async () => {
+    // GIVEN
+    const tmpPath = "/tmp/empty-log.txt";
+    const testContent = "";
+    await fsPromises.writeFile(tmpPath, testContent);
+    const expectedContent = "";
+
+    const reverseFileReader = new ReverseFileReader(
+        tmpPath
+    );
+    const transform = new ReverseLinesTransform();
+    const writableCollector = new WritableCollector();
+    // WHEN
+    pipeline(reverseFileReader, transform, writableCollector, (error) => {
+      if (error) {
+        console.error("Pipeline failed:", error);
+      } else {
+        console.log("Pipeline succeeded");
+      }
+    });
+    await once(writableCollector, "finish");
+
+    // THEN
+    expect(writableCollector.collectedBuffer.toString()).toEqual(
+        expectedContent
+    );
+  });
+
 });

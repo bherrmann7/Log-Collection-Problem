@@ -54,13 +54,6 @@ exports.ReverseFileReader = class ReverseFileReader extends Readable {
           this._closeFile();
           return;
         }
-        if (bytesRead === 0) {
-          this.emit(
-            "error",
-            new Error("How did I get a bytesRead of 0?  File truncation?"),
-          );
-          return;
-        }
         this.push(Buffer.from(this.buffer.subarray(0, bytesRead)));
 
         // was that the last chunk?
