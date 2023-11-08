@@ -55,14 +55,13 @@ exports.ReverseFileReader = class ReverseFileReader extends Readable {
           return;
         }
         if (bytesRead === 0) {
-          // Humm. Is this really an error, or does it mean I need to try again?
           this.emit(
             "error",
             new Error("How did I get a bytesRead of 0?  File truncation?"),
           );
           return;
         }
-        this.push(this.buffer.subarray(0, bytesRead));
+        this.push(Buffer.from(this.buffer.subarray(0, bytesRead)));
 
         // was that the last chunk?
         if (this.position === 0) {

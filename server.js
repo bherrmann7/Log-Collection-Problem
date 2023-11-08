@@ -1,12 +1,10 @@
 const fs = require("fs");
+const fsPromises = fs.promises;
 const express = require("express");
 const app = express();
-const ReverseFileReader = require("./ReverseFileReader").ReverseFileReader;
-const ReverseLinesTransform =
-  require("./ReverseLinesTransform").ReverseLinesTransform;
+const { ReverseFileReader } = require("./ReverseFileReader");
+const { ReverseLinesTransform } = require("./ReverseLinesTransform");
 const { pipeline } = require("stream");
-
-app.use(express.json()); // Humm?
 
 const PORT = process.env.PORT || 3000;
 
@@ -14,16 +12,27 @@ app.listen(PORT, () => {
   console.log("Server Listening on PORT:", PORT);
 });
 
-app.get("/log/", (request, response) => {
-  // filename - need to vet.
-  // n number of entries
-  // filter on text/keyword matches
+app.get("/log/", async (request, response) => {
+  const { filename, n, filter } = request.query;
+  if (!filename || filename.includes("..")) {
+    response.status(400).send("Invalid filename");
+    return;
+  }
+  const fullFilename = "/var/log/" + filename;
+  try {
+    fs.accessSync(fullFilename, fs.constants.R_OK);
+  } catch (error) {
+    response.status(404).send("File not found or not accessible");
+    return;
+  }
 
-  const reverseFileReader = new ReverseFileReader(
-    "/var/log/just10.log",
-    { bufferSize: 3 } /*BOBH*/,
-  );
-  const transform = new ReverseLinesTransform();
+  const reverseFileReader = new ReverseFileReader(fullFilename);
+  const transform = new ReverseLinesTransform(n, filter);
 
-  reverseFileReader.pipe(transform).pipe(response);
+  // reverseFileReader.pipe(transform).pipe(response);
+  pipeline(reverseFileReader, transform, response, (error) => {
+    if (error) {
+      console.error("Pipeline failed:", error);
+    }
+  });
 });

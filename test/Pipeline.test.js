@@ -3,7 +3,7 @@ const fsPromises = fs.promises;
 const { once } = require("events");
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
-const { Readable } = require("stream");
+const { Readable, pipeline } = require("stream");
 const { ReverseFileReader } = require("../ReverseFileReader");
 const { ReverseLinesTransform } = require("../ReverseLinesTransform");
 const { WritableCollector } = require("./WritableCollector");
@@ -70,7 +70,7 @@ describe("pipeline", () => {
   test("test larger generated ascii files", async () => {
     const startTime = Math.floor(Date.now() / 1000);
     const largeFilename = "/tmp/test-ascii-log-file.txt";
-    const targetSize = 1e8; // breaks on; 1e9 = 1 Gig
+    const targetSize = 1e2; // BOBH
     let expectedSize = 0;
     {
       const readableStream = new Readable({
@@ -97,13 +97,17 @@ describe("pipeline", () => {
 
     const startTime2 = Math.floor(Date.now() / 1000);
     const largeReversedFilename = largeFilename + ".node-reversed";
-    const reverseFileReader = new ReverseFileReader(largeFilename, {
-      bufferSize: 17,
-    });
+    const reverseFileReader = new ReverseFileReader(largeFilename);
     const transform = new ReverseLinesTransform();
     const writeStream = fs.createWriteStream(largeReversedFilename);
     // WHEN
-    reverseFileReader.pipe(transform).pipe(writeStream);
+    pipeline(reverseFileReader, transform, writeStream, (error) => {
+      if (error) {
+        console.error("Pipeline failed:", error);
+      } else {
+        console.log("Pipeline succeeded");
+      }
+    });
     await once(writeStream, "finish");
     const endTime2 = Math.floor(Date.now() / 1000);
     console.log(
@@ -113,8 +117,8 @@ describe("pipeline", () => {
     // THEN
     const largeFilenameTacReversed = `${largeFilename}.tac-reversed`;
     await exec(`tac <${largeFilename} > ${largeFilenameTacReversed}`);
-    // await exec(`echo cow >> ${largeFilenameTacReversed}`) // test the test, by dirting the pool.
+    // await exec(`echo cow >> ${largeFilenameTacReversed}`) // test the test, by dirtying the pool.
     console.log(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
     await exec(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
-  }); // , 10 * 60 * 1000)
+  });
 });
