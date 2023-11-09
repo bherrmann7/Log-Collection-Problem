@@ -1,4 +1,3 @@
-design, usage, and testing documentation
 
 Problem statement:
 

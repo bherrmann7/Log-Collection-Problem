@@ -11,7 +11,7 @@ app.listen(PORT, () => {
   console.log("Server Listening on PORT:", PORT);
 });
 
-app.get("/log/", async (request, response) => {
+app.get("/", async (request, response) => {
   const { filename, n, filter } = request.query;
   if (!filename || filename.includes("..")) {
     response.status(400).send("Invalid filename");

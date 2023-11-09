@@ -1,17 +1,23 @@
-I think the requirement that "reasonably performant with >1GB" means that we need to use nodes streaming API.  
-It features backpressure
 
-pipeline
-Backwards Stream Reader <---> Line Transformer <---> Web Writer
+# Design Overview
 
-Backwards Stream reader
+The requirement that "reasonably performant with >1GB" indicates a solution featuring the nodes streaming API.  
+The nodes streaming API features backpressure. 
+
+For assumptions made, see the assumptions.md file.
+
+# The Pipeline
+
+     Reverse File Reader  <---> Reverse Lines Transformer <---> Express Web Writer
+
+Reverse File Reader
 
 - Read the file backwards in chunks.
-- push the backwards chunks into a pipleine.
+- push the backwards chunks into a pipeline.
 
-A transformer extracts the lines. with the LinesDecoder Helper
-
+A transformer extracts the lines with the class ReverseLinesExtractor helper
 - applies filter if applicable
-- stops processing if n lines is reached
+- stops processing if n lines limit is reached
 
-Web writer is from express
+The writer for the pipeline is provided by express
+
