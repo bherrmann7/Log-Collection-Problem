@@ -33,11 +33,12 @@ async function createTestFile(content) {
     await fsPromises.writeFile(tmpFile, content);
 }
 
-async function processTestFileContents() {
+async function processTestFileContents(n, filterStr) {
     const reverseFileReader = new ReverseFileReader(tmpFile);
     const writableCollector = new WritableCollector();
+    const reverseLinesTransform = new ReverseLinesTransform(n, filterStr);
     // WHEN
-    reverseFileReader.pipe(new ReverseLinesTransform()).pipe(writableCollector);
+    reverseFileReader.pipe(reverseLinesTransform).pipe(writableCollector);
     await once(writableCollector, "finish");
     return writableCollector.collectedBuffer.toString()
 }
@@ -136,5 +137,50 @@ describe("pipeline", () => {
         let actualContent = await processTestFileContents();
         // THEN
         expect(actualContent).toEqual("");
+    });
+
+    test("only return 2 lines", async () => {
+        // GIVEN
+        await createTestFile("a\nb1 \nb 2\nc\nb 3\n");
+        // WHEN
+        let actualContent = await processTestFileContents(2);
+        // THEN
+        expect(actualContent).toEqual("b 3\nc\n");
+    });
+
+    test("only return 1 lines", async () => {
+        // GIVEN
+        await createTestFile("a\nb1 \nb 2\nc\nb 3\n");
+        // WHEN
+        let actualContent = await processTestFileContents(1);
+        // THEN
+        expect(actualContent).toEqual("b 3\n");
+    });
+
+    test("only return 0 lines", async () => {
+        // GIVEN
+        await createTestFile("a\nb1 \nb 2\nc\nb 3\n");
+        // WHEN
+        let actualContent = await processTestFileContents(0);
+        // THEN
+        expect(actualContent).toEqual("");
+    });
+
+    test("filter on string", async () => {
+        // GIVEN
+        await createTestFile("dog1\nholy cow1\nbird\n");
+        // WHEN
+        let actualContent = await processTestFileContents(undefined, "cow");
+        // THEN
+        expect(actualContent).toEqual("holy cow1\n");
+    });
+
+    test("filter and return only matching count.", async () => {
+        // GIVEN
+        await createTestFile("cat 1\ndog 1\ncat 2\ndog 2\ncat 3\n");
+        // WHEN
+        let actualContent = await processTestFileContents(2, "cat");
+        // THEN
+        expect(actualContent).toEqual("cat 3\ncat 2\n");
     });
 });
