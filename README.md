@@ -1,4 +1,3 @@
-
 # Log Collection Problem
 
 This github repo is a crack at solving a problem of accessing remote log files efficiently.
@@ -6,7 +5,7 @@ This github repo is a crack at solving a problem of accessing remote log files e
 See problem.md, assumptions.md and design.md for details.
 
 To run the tests, use
-    $ npm run test
+$ npm run test
 
 # usage
 
@@ -26,5 +25,3 @@ To run the tests, use
     [   14.624771] kernel: Bluetooth: MGMT ver 1.22
     [   14.559749] kernel: Bluetooth: hci0: HCI LE Coded PHY feature bit is set, but its usage is not supported.
     [   14.557740] kernel: Bluetooth: hci0: Firmware revision 0.4 build 206 week 22 2023
-
-
