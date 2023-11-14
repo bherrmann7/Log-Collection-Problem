@@ -3,6 +3,8 @@ const fsPromises = require("fs").promises;
 const { once } = require("events");
 
 // This is a test helper.
+// Takes a string "foo" and breaks it into chunks (of size bufferSize) and reverses them.
+// ie function breakStringIntoChunksFromEndAndReverse("foo",1) returns ["o", "o", "f"]
 function breakStringIntoChunksFromEndAndReverse(content, bufferSize) {
   const strings = [];
   do {

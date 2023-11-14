@@ -3,7 +3,7 @@ const { ingest, setup } = require("./HelperReverseLinesExtractor.js");
 describe("ReverseLinesExtractor", () => {
   beforeEach(() => setup());
 
-  test("example animal tests in docs", () => {
+  test("initial happy case (example from comments of ReverseLinesExtractor.js)", () => {
     let lines = ingest("cow\ndog\nwolf\n");
     expect(lines).toEqual(["wolf\n", "dog\n"]);
 
@@ -11,7 +11,7 @@ describe("ReverseLinesExtractor", () => {
     expect(lines).toEqual(["happy cow\n"]);
   });
 
-  test("very first partial line is discarded", () => {
+  test("verify first partial line is discarded", () => {
     let lines = ingest("pigs dont fly\nbirds fly\ncows have hooves");
     expect(lines).toEqual(["birds fly\n"]);
 
@@ -19,7 +19,7 @@ describe("ReverseLinesExtractor", () => {
     expect(lines).toEqual(["pigs dont fly\n"]);
   });
 
-  test("remove last two lines from chunk.", () => {
+  test("simple", () => {
     let lines = ingest("line 1\nline 2\nline 3\n");
     expect(lines).toEqual(["line 3\n", "line 2\n"]);
 
@@ -39,6 +39,7 @@ describe("ReverseLinesExtractor", () => {
     let lines = ingest("");
     expect(lines).toEqual([]);
 
+    // verify that we cant call after we have sent the empty string.
     expect(() => ingest("anything")).toThrow(
       "I'm expressing surprise at being called again! I thought were were all done.",
     );

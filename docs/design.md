@@ -1,7 +1,7 @@
 # Design Overview
 
 The requirement that "reasonably performant with >1GB" indicates a solution featuring the nodes streaming API.  
-The nodes streaming API features backpressure.
+Node's streaming API features backpressure, which keeps too much data from buffering up in memory.
 
 For assumptions made, see the assumptions.md file.
 

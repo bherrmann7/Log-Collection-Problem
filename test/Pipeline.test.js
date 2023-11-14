@@ -18,7 +18,7 @@ const longLine = (() => {
   return line;
 })();
 
-// Generate line a of a random length (up 200 characters)
+// Keep track of current line number, mostly for debugging.
 let lineNumber = 0;
 
 function generateRandomLengthLine() {
@@ -27,12 +27,15 @@ function generateRandomLengthLine() {
   return lineNumber + " " + longLine.substring(0, lineLength) + "\n";
 }
 
+// A place to read from with various tests setting up data in the file.
 const tmpFile = "/tmp/ctt-test-input.log";
 
+// A quick way to populate the contents of the test file.
 async function createTestFile(content) {
   await fsPromises.writeFile(tmpFile, content);
 }
 
+// Run the test file through the pipeline with the provided args.
 async function processTestFileContents(n, filterStr) {
   const reverseFileReader = new ReverseFileReader(tmpFile);
   const writableCollector = new WritableCollector();
@@ -54,7 +57,7 @@ describe("pipeline", () => {
   });
 
   test("closer to real world test", async () => {
-    // GIVEN
+    // GIVEN - a file with a part of a stack trace
     const reverseFileReader = new ReverseFileReader("./test/sample.log");
     const transform = new ReverseLinesTransform();
     const writableCollector = new WritableCollector();
@@ -62,6 +65,7 @@ describe("pipeline", () => {
     reverseFileReader.pipe(transform).pipe(writableCollector);
     await once(writableCollector, "finish");
     // THEN
+    // verify that it is identical to the file processed with the unix "tac" command.
     const reversedSampleFile = fs.readFileSync("./test/sample.tac.log");
     expect(writableCollector.collectedBuffer).toEqual(reversedSampleFile);
   });
@@ -71,6 +75,7 @@ describe("pipeline", () => {
     const largeFilename = "/tmp/test-ascii-log-file.txt";
     const targetSize = 1e3; // using 1e9 is 1 gig, takes a few minutes
     let expectedSize = 0;
+    // GIVEN - This block generates a large file.
     {
       const readableStream = new Readable({
         read() {
@@ -94,6 +99,7 @@ describe("pipeline", () => {
     const endTime = Math.floor(Date.now() / 1000);
     console.log(`File generated. Took: ${endTime - startTime} seconds`);
 
+    // THEN - Now lets push the large file through the pipeline
     const startTime2 = Math.floor(Date.now() / 1000);
     const largeReversedFilename = largeFilename + ".node-reversed";
     const reverseFileReader = new ReverseFileReader(largeFilename);
@@ -113,7 +119,7 @@ describe("pipeline", () => {
       `Finished processing file. Took: ${endTime2 - startTime2} seconds`,
     );
 
-    // THEN
+    // THEN - verify the generated file matches the unix "tac" version of the same file.
     const largeFilenameTacReversed = `${largeFilename}.tac-reversed`;
     await exec(`tac <${largeFilename} > ${largeFilenameTacReversed}`);
     // await exec(`echo cow >> ${largeFilenameTacReversed}`) // test the test, by dirtying the pool.
