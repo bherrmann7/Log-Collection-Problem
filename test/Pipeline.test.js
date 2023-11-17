@@ -97,7 +97,7 @@ describe("pipeline", () => {
       expect(actualSize).toEqual(expectedSize);
     }
     const endTime = Math.floor(Date.now() / 1000);
-    console.log(`File generated. Took: ${endTime - startTime} seconds`);
+    // console.log(`File generated. Took: ${endTime - startTime} seconds`);
 
     // THEN - Now lets push the large file through the pipeline
     const startTime2 = Math.floor(Date.now() / 1000);
@@ -109,21 +109,19 @@ describe("pipeline", () => {
     pipeline(reverseFileReader, transform, writeStream, (error) => {
       if (error) {
         console.error("Pipeline failed:", error);
-      } else {
-        console.log("Pipeline succeeded");
       }
     });
     await once(writeStream, "finish");
     const endTime2 = Math.floor(Date.now() / 1000);
-    console.log(
+    /*console.log(
       `Finished processing file. Took: ${endTime2 - startTime2} seconds`,
-    );
+    );*/
 
     // THEN - verify the generated file matches the unix "tac" version of the same file.
     const largeFilenameTacReversed = `${largeFilename}.tac-reversed`;
     await exec(`tac <${largeFilename} > ${largeFilenameTacReversed}`);
     // await exec(`echo cow >> ${largeFilenameTacReversed}`) // test the test, by dirtying the pool.
-    console.log(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
+    // console.log(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
     await exec(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
   });
 
