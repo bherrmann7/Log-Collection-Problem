@@ -2,10 +2,15 @@
 
 This github repo is a crack at solving a problem of accessing remote log files efficiently.
 
-See problem.md, assumptions.md and design.md for details.
+For more documentation see the "docs" folder
+
+    - docs/problem.md
+	- docs/assumptions.md
+	- docs/design.md
 
 To run the tests, use
-$ npm run test
+
+    $ npm run test
 
 # usage
 
