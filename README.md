@@ -5,14 +5,14 @@ This github repo is a crack at solving a problem of accessing remote log files e
 For more documentation see the "docs" folder
 
     - docs/problem.md
-	- docs/assumptions.md
-	- docs/design.md
+    - docs/assumptions.md
+    - docs/design.md
 
 To run the tests, use
 
     $ npm run test
 
-# usage
+# Usage
 
     On the host with the log files, with a user who has read access to the log files
     $ node server

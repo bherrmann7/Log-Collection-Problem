@@ -1,7 +1,7 @@
 const { ReverseLinesExtractor } = require("../ReverseLinesExtractor");
 let reverseLinesExtractor;
 
-// used by the ReverseLinesExtractor
+// This helper helps the test ReverseLinesExtractor.test.js be a little more readable
 
 // Ingests a string into the lines extractor
 exports.ingest = function (chunkAsString) {
