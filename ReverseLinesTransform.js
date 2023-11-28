@@ -9,7 +9,7 @@ exports.ReverseLinesTransform = class ReverseLinesTransform extends Transform {
   }
 
   _transform(chunk, encoding, callback) {
-    let lines = this.reverseLinesExtractor.extractLines(chunk, chunk.length);
+    let lines = this.reverseLinesExtractor.extractLines(chunk);
     lines = this.considerFilterAndCount(lines);
     if (lines !== null) {
       this.push(Buffer.from(lines.join("")));
@@ -40,7 +40,7 @@ exports.ReverseLinesTransform = class ReverseLinesTransform extends Transform {
     // if we have already finished, then dont do anything
     if (this.linesToSendCount !== 0) {
       // push remaining lines
-      let lines = this.reverseLinesExtractor.extractLines("", 0);
+      let lines = this.reverseLinesExtractor.extractLines(null);
       lines = this.considerFilterAndCount(lines);
       if (lines !== null) {
         this.push(Buffer.from(lines.join("")));

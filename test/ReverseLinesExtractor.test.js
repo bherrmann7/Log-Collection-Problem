@@ -76,4 +76,21 @@ describe("ReverseLinesExtractor", () => {
     lines = ingest("");
     expect(lines).toEqual([]);
   });
+
+  test("new lines.. only new lines...", () => {
+    let lines = ingest("\n\n\n\n");
+    expect(lines).toEqual(["\n", "\n", "\n"]);
+
+    lines = ingest("");
+    expect(lines).toEqual([ "\n"]);
+  });
+
+  test("new lines.. only new lines...", () => {
+    let lines = ingest("\n\n");
+    expect(lines).toEqual(["\n"]);
+
+    lines = ingest("");
+    expect(lines).toEqual([ "\n"]);
+  });
+
 });

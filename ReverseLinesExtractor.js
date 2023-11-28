@@ -19,7 +19,7 @@ exports.ReverseLinesExtractor = class ReverseLinesExtractor {
     this.allDone = false;
   }
 
-  extractLines(chunk, length) {
+  extractLines(chunk) {
     if (this.allDone) {
       throw new Error(
         "I'm expressing surprise at being called again! I thought were were all done.",
@@ -27,7 +27,7 @@ exports.ReverseLinesExtractor = class ReverseLinesExtractor {
     }
 
     // All done, send the remaining Buffer as a line (if needed)
-    if (length === 0) {
+    if (chunk === null || chunk.length === 0) {
       this.allDone = true;
       if (this.remainingBuffer === null) {
         return [];
@@ -36,8 +36,7 @@ exports.ReverseLinesExtractor = class ReverseLinesExtractor {
     }
 
     const lines = [];
-    let end = length - 1;
-    let pos = length - 1;
+    let end = chunk.length - 1;
 
     if (this.firstTime) {
       this.firstTime = false;
@@ -50,24 +49,20 @@ exports.ReverseLinesExtractor = class ReverseLinesExtractor {
         }
         end--;
       }
-      pos = end - 1;
-
-      // BOBH: what about a zero length file, how do we handle that?
     }
-
-    // mental note:  chunk[end] is either the last byte of the chunk, or chunk[end] is == 10
+    let pos = end - 1;
 
     while (pos >= 0) {
-      // UTF? concerns? Presumably 10 could be part of a multibyte character
-      // I'm actively ignoring that for now (aka ASCII only)
       let byte = chunk[pos];
       if (byte === 10) {
         let line = chunk.subarray(pos + 1, end + 1);
+
+        // If we have remaining bytes from a prior chunk, tack them on now.
         if (this.remainingBuffer !== null) {
           line += this.remainingBuffer.toString();
           this.remainingBuffer = null;
         }
-        lines.push(line.toString()); // mild unease
+        lines.push(line.toString());
         end = pos;
       }
       pos--;

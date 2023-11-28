@@ -73,7 +73,7 @@ describe("pipeline", () => {
   test("test larger generated ascii files", async () => {
     const startTime = Math.floor(Date.now() / 1000);
     const largeFilename = "/tmp/test-ascii-log-file.txt";
-    const targetSize = 1e3; // using 1e9 is 1 gig, takes a few minutes
+    const targetSize = 1e5; // using 1e9 is 1 gig, takes 25 seconds
     let expectedSize = 0;
     // GIVEN - This block generates a large file.
     {
@@ -123,7 +123,7 @@ describe("pipeline", () => {
     // await exec(`echo cow >> ${largeFilenameTacReversed}`) // test the test, by dirtying the pool.
     // console.log(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
     await exec(`diff -q ${largeFilenameTacReversed} ${largeReversedFilename}`);
-  });
+  }, 3 * 60 * 1000 /* 3 minutes */);
 
   test("zero length file.", async () => {
     // GIVEN
