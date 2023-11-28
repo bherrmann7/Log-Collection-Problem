@@ -13,18 +13,19 @@
   behavior. I expect the remaining buffer (ReverseLinesExtractor)
   would grow without bound.
 
-- the very first chunk reading from the log file could contain a
+- The very first chunk reading from the log file could contain a
   partial line, this will be discarded as an incomplete line
 
-- this solution has no authentication and/or authorization
+- This solution has no authentication and/or authorization
 
-- this solution does not encrypt traffic over the wire
+- This solution does not encrypt traffic over the wire
 
-- the running user is presumed to have read access to files in
+- The user running node is presumed to have read access to files in
   /var/log (aka part of the "adm" group, or files in /var/log are
   world read)
 
-- node and tests are on some unix variant (ie. the Windows subsystem
-  for linux, or linux or Mac.), ie /tmp/
-- the command line programs "diff" and "tac" are installed and in the
+- Node and tests are run on some unix variant (ie. the Windows subsystem
+  for linux, or linux or Mac.), ie the directory /tmp/ exists.
+
+- The command line programs "diff" and "tac" are installed and in the
   PATH
