@@ -82,7 +82,7 @@ describe("ReverseLinesExtractor", () => {
     expect(lines).toEqual(["\n", "\n", "\n"]);
 
     lines = ingest("");
-    expect(lines).toEqual([ "\n"]);
+    expect(lines).toEqual(["\n"]);
   });
 
   test("new lines.. only new lines...", () => {
@@ -90,7 +90,6 @@ describe("ReverseLinesExtractor", () => {
     expect(lines).toEqual(["\n"]);
 
     lines = ingest("");
-    expect(lines).toEqual([ "\n"]);
+    expect(lines).toEqual(["\n"]);
   });
-
 });

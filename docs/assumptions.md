@@ -5,7 +5,7 @@
   using the unicode high order bit for detecting character
   boundaries. Most of the /var/log/\_.log files on my machine do not
   contain UTF-8. I'm aware of Unicode's graphemes. See
-  https://tonsky.me/blog/unicode/   Handling Unicode would need to
+  https://tonsky.me/blog/unicode/ Handling Unicode would need to
   take graphemes into account.
 
 - A maximum line length was not specified, using files with very long
@@ -26,6 +26,6 @@
 
 - node and tests are running on some unix variant (ie. the Windows subsystem
   for linux, or linux or Mac.), ie has a /tmp/ directory
-  
+
 - The tests assume that the command line programs "diff" and "tac" are
   installed and in the PATH

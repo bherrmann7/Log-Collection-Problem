@@ -37,6 +37,7 @@ exports.ReverseLinesExtractor = class ReverseLinesExtractor {
 
     const lines = [];
     let end = chunk.length - 1;
+    let pos;
 
     if (this.firstTime) {
       this.firstTime = false;
@@ -49,8 +50,10 @@ exports.ReverseLinesExtractor = class ReverseLinesExtractor {
         }
         end--;
       }
+      pos = end - 1;
+    } else {
+      pos = end;
     }
-    let pos = end - 1;
 
     while (pos >= 0) {
       let byte = chunk[pos];
